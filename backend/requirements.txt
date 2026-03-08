@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+websockets
+pyjwt
+pydantic
+requests
+pyngrok
+
+# Production VPN Dependencies
+pywintun-pmd3
+scapy
+cryptography
+psutil
