@@ -1,127 +1,172 @@
-Academic VPN Project
+# Academic VPN Project
 
-A production-style academic VPN implementation developed by Muntazir Mehdi.
-The project demonstrates a modular VPN architecture combining custom cryptography modules, a FastAPI backend, and CLI-based client/server interaction.
+> A production-style VPN implementation demonstrating modular cryptographic architecture, FastAPI backend, WebSocket tunneling, and Wintun driver integration — built for academic research in network security and secure communication systems.
 
-The system is designed for educational and research purposes, focusing on understanding VPN tunnel architecture, encryption mechanisms, and secure communication pipelines.
+---
 
-All interaction is performed through the command line interface (CLI).
-No frontend UI is used.
+## Project Highlights
 
-Project Overview
+| Component | Technology |
+|-----------|-----------|
+| Backend Server | FastAPI + WebSocket |
+| Cryptography | AES, DES/3DES, RSA, SHA-256 |
+| Tunneling | Wintun virtual network adapter (Windows) |
+| Protocol | WireGuard wrapper |
+| Interface | CLI-only (no frontend) |
+| Language | Python 3.11 |
 
-This project simulates a simplified VPN system that includes:
+---
 
-Secure communication between a VPN client and server
+## What This Project Does
 
-Modular cryptographic implementations
+Simulates a simplified but architecturally realistic VPN system including:
 
-A FastAPI-based backend server
+- **Encrypted tunnel** between a VPN client and server
+- **Modular crypto engine** — AES, DES/3DES, RSA, SHA-256 implemented from scratch
+- **WebSocket control channel** for real-time client-server communication
+- **FastAPI backend** orchestrating tunnel lifecycle
+- **Wintun driver integration** for Windows TUN adapter support
 
-A WebSocket control channel for communication
+The architecture mirrors real-world VPN systems while remaining readable and extensible for academic study.
 
-Integration with the Wintun driver for tunneling support on Windows
+---
 
-The architecture is structured to mimic real-world VPN systems while remaining understandable for academic study and experimentation.
+## Repository Structure
 
-Quick Start (CLI Only)
-1. Create and activate virtual environment
+```
+Academic-VPN/
+├── backend/
+│   ├── server.py               # FastAPI server + tunnel orchestration
+│   ├── vpn_client.py           # CLI VPN client
+│   └── requirements.txt
+├── core/
+│   ├── aes.py                  # AES encryption module
+│   ├── des.py                  # DES / 3DES encryption module
+│   ├── rsa.py                  # RSA key operations
+│   ├── hashing.py              # SHA-256 utilities
+│   ├── signatures.py           # Digital signature support
+│   ├── wireguard_wrapper.py    # WireGuard integration
+│   └── wintun_wrapper.py       # Wintun driver interface
+├── docs/
+│   ├── technical_manual.md     # Full architecture documentation
+│   ├── defense_presentation.md # Academic defense notes
+│   └── chacha20_plan.md        # Planned ChaCha20 implementation
+├── wintun/                     # Windows TUN driver resources
+├── tests/
+│   └── demo_crypto.py          # Crypto module verification scripts
+├── launch_vpn.py
+├── run_server.py
+├── START_SERVER.bat
+└── START_VPN_ADMIN.bat
+```
 
-Python 3.11 recommended
+---
 
-Windows PowerShell:
+## Quick Start
 
+### 1. Setup environment
+
+```bash
+# Python 3.11 recommended
 python -m venv venv
-.\venv\Scripts\Activate.ps1
-2. Install dependencies
+.\venv\Scripts\Activate.ps1        # Windows PowerShell
 pip install -r backend/requirements.txt
-3. Run the VPN server
+```
+
+### 2. Start the VPN server
+
+```bash
 python -m backend.server
 
-Alternative launchers:
-
+# Alternatives
 python run_server.py
 START_SERVER.bat
-4. Run the VPN client
+```
+
+### 3. Connect the VPN client
+
+```bash
 python backend/vpn_client.py
 
-Alternative launchers:
-
+# Alternatives
 python launch_vpn.py
-START_VPN_ADMIN.bat
-Project Structure
-backend/
-    FastAPI server, tunnel orchestration, WebSocket control channel
+START_VPN_ADMIN.bat        # Run as Administrator for Wintun access
+```
 
-core/
-    Cryptographic modules (AES, DES/3DES, RSA, hashing, signatures)
-    WireGuard wrapper
-    Wintun wrapper
+---
 
-docs/
-    Technical documentation, architecture notes, defense presentation
+## Cryptographic Modules
 
-wintun/
-    Windows TUN driver resources and documentation
+All crypto is implemented modularly in `core/` — each algorithm is isolated and independently testable:
 
-launch_vpn.py
-run_server.py
-START_*.bat
-    Convenience scripts for launching the VPN
-Core Features
+```
+core/aes.py          → AES-128/256 encryption & decryption
+core/des.py          → DES and 3DES block cipher
+core/rsa.py          → RSA key generation, encrypt, decrypt
+core/hashing.py      → SHA-256 digest utilities
+core/signatures.py   → Digital signature creation & verification
+```
 
-Modular cryptographic implementations
+Run verification tests:
 
-AES encryption support
+```bash
+python tests/demo_crypto.py
+```
 
-DES / 3DES encryption modules
+---
 
-RSA key-based operations
+## Architecture Overview
 
-SHA-256 hashing utilities
+```
+VPN Client (CLI)
+      │
+      │  WebSocket (control channel)
+      ▼
+FastAPI Backend Server
+      │
+      ├── Crypto Engine (AES / RSA / SHA-256)
+      │
+      └── Wintun Adapter → TUN Interface → Encrypted Tunnel
+```
 
-WebSocket-based control communication
+---
 
-CLI-based VPN client management
+## Current Status
 
-FastAPI server architecture
+- ✅ All cryptographic modules implemented and verified
+- ✅ FastAPI backend server operational
+- ✅ WebSocket control channel (client ↔ server)
+- ✅ Wintun virtual adapter integration
+- ✅ CLI-based connection management
+- 🔄 ChaCha20 implementation planned (`docs/chacha20_plan.md`)
 
-Integration with the Wintun virtual network adapter
+**Known limitations:**
+- DES test vectors diverge from official FIPS vectors (functional for demonstration)
+- Tunnel features simplified for educational scope
+- Some production-grade features (key rotation, NAT traversal) not implemented
 
-Current Status
+---
 
-Core cryptographic modules implemented and verified.
+## Documentation
 
-FastAPI backend server operational.
+| File | Contents |
+|------|----------|
+| `docs/technical_manual.md` | Full architecture & design decisions |
+| `docs/defense_presentation.md` | Academic defense walkthrough |
+| `docs/chacha20_plan.md` | Roadmap for ChaCha20 stream cipher |
+| `wintun/README.md` | Wintun driver setup & usage |
 
-WebSocket communication between client and server implemented.
+---
 
-CLI-based workflow for VPN connection management.
+## Tech Stack
 
-Testing scripts available in:
+`Python 3.11` `FastAPI` `WebSockets` `Wintun` `WireGuard` `AES` `RSA` `SHA-256`
 
-tests/demo_crypto.py
-Known Limitations
+---
 
-DES test vectors differ from official FIPS vectors (works for demonstration).
+## Author
 
-VPN tunnel features are simplified for educational purposes.
+**Muntazir Mehdi** — CS Student, NUST SEECS  
+Developed as part of an academic networking & security project to demonstrate VPN architecture, cryptographic design, and secure communication pipelines.
 
-Some advanced production VPN features are not implemented.
-
-Documentation
-
-Detailed technical information is available in:
-
-docs/technical_manual.md
-docs/defense_presentation.md
-docs/chacha20_plan.md
-
-Wintun driver documentation:
-
-wintun/README.md
-Author
-
-Muntazir Mehdi
-
-This project was developed as part of an academic networking/security project to demonstrate VPN architecture, cryptographic design, and secure communication systems.
+[GitHub](https://github.com/muntazir-mehdii) · [Upwork](https://www.upwork.com/freelancers/~015ab18bf2700e35b7)
